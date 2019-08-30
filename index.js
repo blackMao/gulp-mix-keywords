@@ -17,7 +17,7 @@ module.exports = function keywordsReplace(options){
     var stream = through.obj(function(file, encode, cb){
 		var url = newOptions.protocol+'://'+newOptions.host+':'+newOptions.port+newOptions.path
 
-		utils.getConfig(url, {"callback":"callback"}).then(function(data){
+		utils.getConfig(url, newOptions.data).then(function(data){
 			var protocol_message = data;
 
 			if(protocol_message != null) {
@@ -28,9 +28,11 @@ module.exports = function keywordsReplace(options){
 
 				//替换关键字段
 				for (var i = 0; i < protocol_message['obfuscate_data'].length; i++) {
-					var replace_str = '$' + protocol_message['obfuscate_data'][i]["jsonPath"] + '$';
-					contents = contents.replace(replace_str, protocol_message['obfuscate_data'][i]["obfuscateName"]);
-				}
+    				var  key = protocol_message['obfuscate_data'][i]["jsonPath"].split('.').join('\.');
+                    var reg = new RegExp('\\$'+key+'\\$', 'g');
+
+                    contents = contents.replace(reg, protocol_message['obfuscate_data'][i]["obfuscateName"]);
+                }
 
 				file.contents = new Buffer(contents, encode);
 
