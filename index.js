@@ -20,18 +20,18 @@ module.exports = function keywordsReplace(options){
 		utils.getConfig(url, newOptions.data).then(function(data){
 			var protocol_message = data;
 
-			if(protocol_message != null) {
-				var contents = file.contents.toString(encode);
+			 if(protocol_message != null) {
+                    var contents = file.contents.toString(encode);
+                    //替换协议版本
+                    contents = contents.replace("$protocol$", protocol_message['protocol'])
+                    //替换关键字段
+                    for (var i = 0; i < protocol_message['obfuscate_data'].length; i++) {
+                    var  key = protocol_message['obfuscate_data'][i]["jsonPath"].split('.').join('\.');
+                    var keyReg = new RegExp('\\$'+key+'\\$', 'g');
+                    var randomKeyReg = new RegExp('\\$'+key+'Key\\$', 'g');
 
-				//替换协议版本
-				contents = contents.replace("$protocol$", protocol_message['protocol'])
-
-				//替换关键字段
-				for (var i = 0; i < protocol_message['obfuscate_data'].length; i++) {
-    				var  key = protocol_message['obfuscate_data'][i]["jsonPath"].split('.').join('\.');
-                    var reg = new RegExp('\\$'+key+'\\$', 'g');
-
-                    contents = contents.replace(reg, protocol_message['obfuscate_data'][i]["obfuscateName"]);
+                    contents = contents.replace(keyReg, protocol_message['obfuscate_data'][i]["obfuscateName"]);
+                    contents = contents.replace(randomKeyReg, protocol_message['obfuscate_data'][i]["randomKey"]);
                 }
 
 				file.contents = new Buffer(contents, encode);
