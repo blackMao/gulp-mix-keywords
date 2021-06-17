@@ -1,6 +1,6 @@
 {
   "name": "gulp-mix-keywords",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "replace keywords",
   "main": "index.js",
   "scripts": {
